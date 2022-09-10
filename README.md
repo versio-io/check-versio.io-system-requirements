@@ -11,11 +11,11 @@ Please make sure that all red marked hints are removed before installation. For 
 Execute the following commands to download and execute the script:
 
 ```
-curl https://github.com/versio-io/check-versio.io-system-requirements/check-versio.io-system-requirements.sh 
+curl https://raw.githubusercontent.com/versio-io/check-versio.io-system-requirements/main/check-versio.io-system-requirements.sh -o check-versio.io-system-requirements.sh
 
 bash check-versio.io-system-requirements.sh 
 ```
 
 Enclosed you will find two examples of how such a verification was successfully or unsuccessfully executed. It's that simple!
 
-![Script execution example](exceution-example.gif)
+![Script execution example](img/exceution-example.gif)

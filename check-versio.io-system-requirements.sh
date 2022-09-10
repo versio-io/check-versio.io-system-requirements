@@ -216,11 +216,11 @@ if [ "$WARNING" = "1" ]; then
     echo -e "\tYou must have the knowledge to handle it."
 fi
 if [ "$ERROR" = "0" ]; then
-	echo -e "\t\033[42mSystem requirements are fulfilled. You are ready to start Versio.io plattform!\033[0m"
+	echo -e "\t\033[42mSystem requirements are fulfilled. You are ready to install and start Versio.io Managed plattform!\033[0m"
     echo -e "\tYou are ready to customize configuration and start Versio.io platform. See manual at https://doc.versio.io/setup-managed"
 	echo ""
 else
-    echo -e "\t\033[41mSystem requirements are not fulfilled.\033[0m"  
+    echo -e "\t\033[41mSystem requirements are not fulfilled to install Versio.io Managed platform.\033[0m"  
     echo -e "\tPlease read more about system requirements in Versio.io manual at https://doc.versio.io/setup-system-requirements"
 	echo ""
 	exit 1;
