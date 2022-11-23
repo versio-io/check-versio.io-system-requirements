@@ -52,6 +52,18 @@ else
 
 fi
 
+# ==================================================================
+# Verify operating system
+# ==================================================================
+echo -e "\n[versio.io] Check IPv6 support"
+IPV6=$(cat /sys/module/ipv6/parameters/disable)
+if [ "$IPV6" = "0" ]; then
+     echo -e "\t\033[42mIPv6 supported available.\033[0m"
+else
+    echo -e "\t\033[30m\033[43mIPv6 support unavailable.\033[0m"  
+    echo -e "\tPlease activate IPv6 support!"  
+	export WARNING=1
+fi
 
 # ============================================
 # Verify OS commands available
