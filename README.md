@@ -8,12 +8,12 @@ Please make sure that all red marked hints are removed before installation. For 
 
 ## Execution
 
-Execute the following commands to download and execute the script:
+Execute the following commands to download and execute the script as root user:
 
 ```
 curl https://raw.githubusercontent.com/versio-io/check-versio.io-system-requirements/main/check-versio.io-system-requirements.sh -o check-versio.io-system-requirements.sh
 
-bash check-versio.io-system-requirements.sh 
+sudo bash check-versio.io-system-requirements.sh 
 ```
 
 Enclosed you will find two examples of how such a verification was successfully or unsuccessfully executed. It's that simple!
