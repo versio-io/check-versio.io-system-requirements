@@ -49,7 +49,6 @@ else
     echo -e "\tLinux expertise is necessary to run the Versio.io platform"  
 	echo -e "\tOS: $WHICH_OS"
 	export WARNING=1
-
 fi
 
 # ==================================================================
@@ -182,7 +181,6 @@ else
 	export ERROR=1
 fi
 
-
 # ============================================
 # Verify external URLs are reachable
 # ============================================
@@ -215,6 +213,43 @@ do
 	else
 		echo -e "\tCheck network connection to '$domain'."
 		echo -e "\t\t\033[30m\033[43mNo command to check URL connection available.\033[0m"
+	fi
+done
+
+
+
+# =================================================
+# Verify hardware vendor warranty API are reachable
+# =================================================
+echo -e "\n[versio.io] Check if warranty APIs of hardware vendors are available"
+for domain in \
+	https://apigtwb2c.us.dell.com \
+	https://supporttickets.intel.com \
+	http://supportapi.lenovo.com
+do
+	if [ "$WGET" = "1" ]; then
+		echo -e "\tCheck network connection to '$domain' with wget."
+		PING_RESULT=$(wget -q -O -S --spider $domain | echo $?)
+		if [ "$PING_RESULT" = "0" ]; then
+			echo -e "\t\t\033[42mAvailable.\033[0m"
+		else
+			echo -e "\t\t\033[30m\033[43mNot available.\033[0m"
+			echo -e "\t\tWarranty information for servers, workstations and laptops cannot be determined."
+			WARNING=1
+		fi
+	elif [ "$CURL" = "1" ]; then
+		echo -e "\tCheck network connection to '$domain' with curl."
+		PING_RESULT=$(curl -Is $domain | head -n 1 | grep -e 200 -e 401 | wc -l)
+		if [ "$PING_RESULT" = "1" ]; then
+			echo -e "\t\t\033[42mAvailable.\033[0m"
+		else
+			echo -e "\t\t\033[30m\033[43mNot available.\033[0m"
+			echo -e "\t\tWarranty information for servers, workstations and laptops cannot be determined."
+			WARNING=1
+		fi
+	else
+		echo -e "\tCheck network connection to '$domain'."
+		echo -e "\t\t\033[30m\033[43mNo command to check vendor warranty API connection available.\033[0m"
 	fi
 done
 
