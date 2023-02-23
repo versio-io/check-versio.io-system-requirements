@@ -77,7 +77,8 @@ for command in \
 		curl \
 		ss \
 		which \
-		systemctl
+		systemctl \
+		pv
 do
 	echo -e "\tCheck command '$command':"
 	IS_INSTALLED=$(which $command 2>/dev/null| wc -l)
