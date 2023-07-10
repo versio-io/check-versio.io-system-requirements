@@ -44,6 +44,9 @@ elif [ "$WHICH_OS" = "NAME=\"Red Hat Enterprise Linux Server\"" ]; then
 elif [ "$WHICH_OS" = "NAME=\"Debian GNU/Linux\"" ]; then
 	echo -e "\t\033[42mSupported operating system.\033[0m"
 	echo -e "\tOS: Debian"
+elif [ "$WHICH_OS" = "NAME=\"AlmaLinux\"" ]; then
+	echo -e "\t\033[42mSupported operating system.\033[0m"
+	echo -e "\tOS: AlmaLinux"
 else
     echo -e "\t\033[30m\033[43mUnsupported operating system.\033[0m"  
     echo -e "\tLinux expertise is necessary to run the Versio.io platform"  
@@ -78,7 +81,8 @@ for command in \
 		ss \
 		which \
 		systemctl \
-		pv
+		pv \
+		jq
 do
 	echo -e "\tCheck command '$command':"
 	IS_INSTALLED=$(which $command 2>/dev/null| wc -l)
@@ -128,15 +132,15 @@ fi
 # ============================================
 # Verify docker-compose is installed
 # ============================================
-echo -e "\n[versio.io] Check if docker composed installation is available"
-IS_DOCKER_COMPOSER_INSTALLED=$(which docker-compose 2> /dev/null | grep -c "docker-compose")
-if [ "$IS_DOCKER_COMPOSER_INSTALLED" = "1" ]; then
-	echo -e "\t\033[42mAvailable\033[0m"
-	echo -e "\t"$(docker-compose --version)
-else
-    echo -e "\t\033[41mNot installed\033[0m"  
-	export ERROR=1
-fi
+# echo -e "\n[versio.io] Check if docker composed installation is available"
+# IS_DOCKER_COMPOSER_INSTALLED=$(which docker-compose 2> /dev/null | grep -c "docker-compose")
+# if [ "$IS_DOCKER_COMPOSER_INSTALLED" = "1" ]; then
+# 	echo -e "\t\033[42mAvailable\033[0m"
+# 	echo -e "\t"$(docker-compose --version)
+# else
+#     echo -e "\t\033[41mNot installed\033[0m"  
+# 	export ERROR=1
+# fi
 
 # ============================================
 # Verify that no anti virus program or other blocker are running
