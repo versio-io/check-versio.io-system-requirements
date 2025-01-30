@@ -324,7 +324,8 @@ if [ "$IS_INSTALLED" = "1" ]; then
 	ERROR=1
 	fi
 else
-	echo -e "\t\033[41m Can't execute benchmark because command 'sysbench' is not available! \033[0m"
+	echo -e "\t\033[43m Can't execute benchmark because command 'sysbench' is not available! \033[0m"
+	export WARNING=1
 fi
 
 
