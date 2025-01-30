@@ -21,7 +21,7 @@ export WGET=0
 export CURL=0
 
 if [ "$EUID" -ne 0 ];  then 
-	echo -e "\033[41mPlease run the script as a root user.\033[0m"
+	echo -e "\033[41m Please run the script as a root user. \033[0m"
 	echo ""
 	exit 1;
 fi
@@ -51,7 +51,7 @@ elif [ "$WHICH_OS" = "NAME=\"AlmaLinux\"" ]; then
 	echo -e "\t\033[42mSupported operating system.\033[0m"
 	echo -e "\tOS: AlmaLinux"
 else
-    echo -e "\t\033[30m\033[43mUnsupported operating system.\033[0m"  
+    echo -e "\t\033[30m\033[43m Unsupported operating system. \033[0m"  
     echo -e "\tLinux expertise is necessary to run the Versio.io platform"  
 	echo -e "\tOS: $WHICH_OS"
 	export WARNING=1
@@ -63,9 +63,9 @@ fi
 echo -e "\n[versio.io] Check IPv6 support"
 IPV6=$(cat /sys/module/ipv6/parameters/disable)
 if [ "$IPV6" = "0" ]; then
-     echo -e "\t\033[42mIPv6 supported available.\033[0m"
+     echo -e "\t\033[42m IPv6 supported available. \033[0m"
 else
-    echo -e "\t\033[30m\033[43mIPv6 support unavailable.\033[0m"  
+    echo -e "\t\033[30m\033[43m IPv6 support unavailable. \033[0m"  
     echo -e "\tPlease activate IPv6 support!"  
 	export WARNING=1
 fi
@@ -93,14 +93,14 @@ do
 	echo -e "\tCheck command '$command':"
 	IS_INSTALLED=$(which $command 2>/dev/null| wc -l)
 	if [ "$IS_INSTALLED" = "1" ]; then
-		echo -e "\t\t\033[42mAvailable.\033[0m"
+		echo -e "\t\t\033[42m Available. \033[0m"
 		if [ "$command" = "curl" ]; then 
 			export CURL=1
 		elif [ "$command" = "wget" ]; then 
 			export WGET=1
 		fi
 	else
-		echo -e "\t\t\033[41mNot installed\033[0m"  
+		echo -e "\t\t\033[41m Not installed \033[0m"  
 		echo -e "\t\tPlease install app (apt/yum/dnf install $command)"  
 		export ERROR=1
 	fi
@@ -113,10 +113,10 @@ done
 echo -e "\n[versio.io] Check if docker installation is available"
 IS_DOCKER_INSTALLED=$(which docker 2> /dev/null | grep -c "docker")
 if [ "$IS_DOCKER_INSTALLED" = "1" ]; then
-	echo -e "\t\033[42mAvailable\033[0m"
+	echo -e "\t\033[42m Available \033[0m"
 	echo -e "\t"$(docker --version)
 else
-    echo -e "\t\033[41mNot installed\033[0m"  
+    echo -e "\t\033[41m Not installed \033[0m"  
 	export ERROR=1
 fi
 
@@ -127,9 +127,9 @@ fi
 echo -e "\n[versio.io] Check if docker daemon is not running"
 IS_DOCKER_DAEMON_RUNNING=$(systemctl status docker 2> /dev/null | grep "Active: active (running)" | wc -l)
 if [ "$IS_DOCKER_DAEMON_RUNNING" = "1" ]; then
-	echo -e "\t\033[42mRunning\033[0m"
+	echo -e "\t\033[42m Running \033[0m"
 else
-    echo -e "\t\033[41mNot runningd\033[0m"  
+    echo -e "\t\033[41m Not runningd \033[0m"  
 	echo -e "\tTry to start with: systemctl start docker"  
 	export ERROR=1
 fi
@@ -161,9 +161,9 @@ do
 	echo -e "\tApplication: $app"
 	IS_AGENT_DETECTED=$(ps -ef | grep -c $app)
 	if [ "$IS_AGENT_DETECTED" = "1" ]; then
-		echo -e "\t\t\033[42mNo virus app is running\033[0m"
+		echo -e "\t\t\033[42m No virus app is running \033[0m"
 	else
-    	echo -e "\t\t\033[30m\033[43mVirus app is running\033[0m"  
+    	echo -e "\t\t\033[30m\033[43m Virus app is running \033[0m"  
     	echo -e "\t\tVirus can affect the functionality of Versio.io "  
 		export WARNING=1
 	fi
@@ -176,18 +176,18 @@ echo -e "\n[versio.io] Check if needed ports are not used"
 echo -e "\tPort 80 (HTTP)"
 IS_USED=$(ss -lntu  | grep -c ":80")
 if [ "$IS_USED" = "0" ]; then 
-	echo -e "\t\t\033[42mNot used\033[0m"
+	echo -e "\t\t\033[42m Not used \033[0m"
 else
-    echo -e "\t\t\033[41mPort is in use\033[0m"  
+    echo -e "\t\t\033[41m Port is in use \033[0m"  
     echo -e "\t\tPlease stop the process that use port 80"  
 	export ERROR=1
 fi
 echo -e "\tPort 443 (HTTPS)"
 IS_USED=$(ss -lntu | grep -c ":443")
 if [ "$IS_USED" = "0" ]; then
-	echo -e "\t\t\033[42mNot used\033[0m"
+	echo -e "\t\t\033[42m Not used \033[0m"
 else
-    echo -e "\t\t\033[41mPort is in use\033[0m"  
+    echo -e "\t\t\033[41m Port is in use \033[0m"  
     echo -e "\t\tPlease stop the process that use port 443"  
 	export ERROR=1
 fi
@@ -205,9 +205,9 @@ do
 		echo -e "\tCheck network connection to '$domain' with wget."
 		PING_RESULT=$(wget -q -O -S --spider $domain | echo $?)
 		if [ "$PING_RESULT" = "0" ]; then
-			echo -e "\t\t\033[42mAvailable.\033[0m"
+			echo -e "\t\t\033[42m Available. \033[0m"
 		else
-			echo -e "\t\t\033[30m\033[43mNot available.\033[0m"
+			echo -e "\t\t\033[30m\033[43m Not available. \033[0m"
 			echo -e "\t\tOnly restricted service available."
 			WARNING=1
 		fi
@@ -215,15 +215,15 @@ do
 		echo -e "\tCheck network connection to '$domain' with curl."
 		PING_RESULT=$(curl -Is $domain | head -n 1 | grep -e 200 -e 401 | wc -l)
 		if [ "$PING_RESULT" = "1" ]; then
-			echo -e "\t\t\033[42mAvailable.\033[0m"
+			echo -e "\t\t\033[42m Available. \033[0m"
 		else
-			echo -e "\t\t\033[30m\033[43mNot available.\033[0m"
+			echo -e "\t\t\033[30m\033[43m Not available. \033[0m"
 			echo -e "\t\tOnly restricted service available."
 			WARNING=1
 		fi
 	else
 		echo -e "\tCheck network connection to '$domain'."
-		echo -e "\t\t\033[30m\033[43mNo command to check URL connection available.\033[0m"
+		echo -e "\t\t\033[30m\033[43m No command to check URL connection available. \033[0m"
 	fi
 done
 
@@ -242,9 +242,9 @@ do
 		echo -e "\tCheck network connection to '$domain' with wget."
 		PING_RESULT=$(wget -q -O -S --spider $domain | echo $?)
 		if [ "$PING_RESULT" = "0" ]; then
-			echo -e "\t\t\033[42mAvailable.\033[0m"
+			echo -e "\t\t\033[42m Available. \033[0m"
 		else
-			echo -e "\t\t\033[30m\033[43mNot available.\033[0m"
+			echo -e "\t\t\033[30m\033[43m Not available. \033[0m"
 			echo -e "\t\tWarranty information for servers, workstations and laptops cannot be determined."
 			WARNING=1
 		fi
@@ -252,15 +252,15 @@ do
 		echo -e "\tCheck network connection to '$domain' with curl."
 		PING_RESULT=$(curl -Is $domain | head -n 1 | grep -e 200 -e 401 | wc -l)
 		if [ "$PING_RESULT" = "1" ]; then
-			echo -e "\t\t\033[42mAvailable.\033[0m"
+			echo -e "\t\t\033[42m Available. \033[0m"
 		else
-			echo -e "\t\t\033[30m\033[43mNot available.\033[0m"
+			echo -e "\t\t\033[30m\033[43m Not available. \033[0m"
 			echo -e "\t\tWarranty information for servers, workstations and laptops cannot be determined."
 			WARNING=1
 		fi
 	else
 		echo -e "\tCheck network connection to '$domain'."
-		echo -e "\t\t\033[30m\033[43mNo command to check vendor warranty API connection available.\033[0m"
+		echo -e "\t\t\033[30m\033[43m No command to check vendor warranty API connection available. \033[0m"
 	fi
 done
 
@@ -280,12 +280,12 @@ if [ "$IS_INSTALLED" = "1" ]; then
 
 	# Assessment of the result
 	if (( $(echo "$cpu_result > 1200" | bc -l) )); then
-	echo -e "\t\t\033[42mVery good CPU performance \033[0m"
+	echo -e "\t\t\033[42m Very good CPU performance \033[0m"
 	elif (( $(echo "$cpu_result > 500" | bc -l) )); then
-	echo -e "\t\t\033[30m\033[43mAverage CPU performance\033[0m"
+	echo -e "\t\t\033[30m\033[43m Average CPU performance \033[0m"
 	WARNING=1
 	else
-	echo -e "\t\t\033[41mInadequate CPU performance\033[0m"
+	echo -e "\t\t\033[41m Inadequate CPU performance \033[0m"
 	ERROR=1
 	fi
 
@@ -300,10 +300,10 @@ if [ "$IS_INSTALLED" = "1" ]; then
 	if (( $(echo "$memory_result > 6000" | bc -l) )); then
 	echo -e "\t\t\033[42mVery good memory performance \033[0m"
 	elif (( $(echo "$memory_result > 4000" | bc -l) )); then
-	echo -e "\t\t\033[30m\033[43mAverage memory performance\033[0m"
+	echo -e "\t\t\033[30m\033[43m Average memory performance \033[0m"
 	WARNING=1
 	else
-	echo -e "\t\t\033[41mInadequate memory performance\033[0m"
+	echo -e "\t\t\033[41m Inadequate memory performance \033[0m"
 	ERROR=1
 	fi
 
@@ -317,14 +317,14 @@ if [ "$IS_INSTALLED" = "1" ]; then
 	if (( $(echo "$disk_result > 600" | bc -l) )); then
 	echo -e "\t\t\033[42mVery good disk I/O performance \033[0m"
 	elif (( $(echo "$disk_result > 300" | bc -l) )); then
-	echo -e "\t\t\033[30m\033[43mAverage disk I/O performance\033[0m"
+	echo -e "\t\t\033[30m\033[43m Average disk I/O performance \033[0m"
 	WARNING=1
 	else
-	echo -e "\t\t\033[41mInadequate disk I/O performance\033[0m"
+	echo -e "\t\t\033[41m Inadequate disk I/O performance \033[0m"
 	ERROR=1
 	fi
 else
-	echo -e "\t\033[43m Can't execute benchmark because command 'sysbench' is not available! \033[0m"
+	echo -e "\t\033[30m\033[43m Can't execute benchmark because command 'sysbench' is not available! \033[0m"
 	export WARNING=1
 fi
 
@@ -336,15 +336,15 @@ echo -e "\n==================================================="
 echo -e "\n[versio.io] System requirements verification result"
 echo -e "\n==================================================="
 if [ "$WARNING" = "1" ]; then
-	echo -e "\t\033[30m\033[43mThere are active warning!\033[0m"
+	echo -e "\t\033[30m\033[43m There are active warning! \033[0m"
     echo -e "\tYou must have the knowledge to handle it."
 fi
 if [ "$ERROR" = "0" ]; then
-	echo -e "\t\033[42mSystem requirements are fulfilled. You are ready to install and start Versio.io Managed plattform!\033[0m"
+	echo -e "\t\033[42m System requirements are fulfilled. You are ready to install and start Versio.io Managed plattform! \033[0m"
     echo -e "\tYou are ready to customize configuration and start Versio.io platform. See manual at https://doc.versio.io/setup-managed"
 	echo ""
 else
-    echo -e "\t\033[41mSystem requirements are not fulfilled to install Versio.io Managed platform.\033[0m"  
+    echo -e "\t\033[41m System requirements are not fulfilled to install Versio.io Managed platform. \033[0m"  
     echo -e "\tPlease read more about system requirements in Versio.io manual at https://doc.versio.io/setup-system-requirements"
 	echo ""
 	exit 1;
