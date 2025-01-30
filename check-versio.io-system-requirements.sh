@@ -270,57 +270,62 @@ done
 # ============================================
 echo "[versio.io] Start system performance benchmark ..."
 
-# CPU benchmark
-echo -e "\tStart CPU benchmark ..."
-cpu_result=$(sysbench cpu --cpu-max-prime=20000 run | grep "events per second:" | awk '{print $4}')
-echo -e "\t\tEvents per seconds: $cpu_result"
+IS_INSTALLED=$(which sysbench 2>/dev/null| wc -l)
+if [ "$IS_INSTALLED" = "1" ]; then
 
-# Assessment of the result
-if (( $(echo "$cpu_result > 1200" | bc -l) )); then
-  echo -e "\t\t\033[42mVery good CPU performance \033[0m"
-elif (( $(echo "$cpu_result > 500" | bc -l) )); then
-  echo -e "\t\t\033[30m\033[43mAverage CPU performance\033[0m"
-  WARNING=1
+	# CPU benchmark
+	echo -e "\tStart CPU benchmark ..."
+	cpu_result=$(sysbench cpu --cpu-max-prime=20000 run | grep "events per second:" | awk '{print $4}')
+	echo -e "\t\tEvents per seconds: $cpu_result"
+
+	# Assessment of the result
+	if (( $(echo "$cpu_result > 1200" | bc -l) )); then
+	echo -e "\t\t\033[42mVery good CPU performance \033[0m"
+	elif (( $(echo "$cpu_result > 500" | bc -l) )); then
+	echo -e "\t\t\033[30m\033[43mAverage CPU performance\033[0m"
+	WARNING=1
+	else
+	echo -e "\t\t\033[41mInadequate CPU performance\033[0m"
+	ERROR=1
+	fi
+
+
+
+	# Memory benchmark
+	echo -e "\tStart memory benchmark ..."
+	memory_result=$(sysbench memory --memory-total-size=5G run | grep "transferred" | awk '{print $4}' | sed 's/(//g')
+	echo -e "\t\tTotal time: $memory_result MiB/sec"
+
+	# Assessment of the result
+	if (( $(echo "$memory_result > 6000" | bc -l) )); then
+	echo -e "\t\t\033[42mVery good memory performance \033[0m"
+	elif (( $(echo "$memory_result > 4000" | bc -l) )); then
+	echo -e "\t\t\033[30m\033[43mAverage memory performance\033[0m"
+	WARNING=1
+	else
+	echo -e "\t\t\033[41mInadequate memory performance\033[0m"
+	ERROR=1
+	fi
+
+
+	# Disk IO benchmark
+	echo -e "\tStart disk I/O benchmark ..."
+	disk_result=$(dd if=/dev/zero of=tempfile bs=1M count=1024 conv=fdatasync 2>&1 | grep "MB/s" | awk '{print $(NF-1)}')
+	echo -e "\t\tTotal time: $disk_result MB/s"
+
+	# Assessment of the result
+	if (( $(echo "$disk_result > 600" | bc -l) )); then
+	echo -e "\t\t\033[42mVery good disk I/O performance \033[0m"
+	elif (( $(echo "$disk_result > 300" | bc -l) )); then
+	echo -e "\t\t\033[30m\033[43mAverage disk I/O performance\033[0m"
+	WARNING=1
+	else
+	echo -e "\t\t\033[41mInadequate disk I/O performance\033[0m"
+	ERROR=1
+	fi
 else
-  echo -e "\t\t\033[41mInadequate CPU performance\033[0m"
-  ERROR=1
+	echo -e "\t\033[41m Can't execute benchmark because command 'sysbench' is not available! \033[0m"
 fi
-
-
-
-# Memory benchmark
-echo -e "\tStart memory benchmark ..."
-memory_result=$(sysbench memory --memory-total-size=5G run | grep "transferred" | awk '{print $4}' | sed 's/(//g')
-echo -e "\t\tTotal time: $memory_result MiB/sec"
-
-# Assessment of the result
-if (( $(echo "$memory_result > 6000" | bc -l) )); then
-  echo -e "\t\t\033[42mVery good memory performance \033[0m"
-elif (( $(echo "$memory_result > 4000" | bc -l) )); then
-  echo -e "\t\t\033[30m\033[43mAverage memory performance\033[0m"
-  WARNING=1
-else
-  echo -e "\t\t\033[41mInadequate memory performance\033[0m"
-  ERROR=1
-fi
-
-
-# Disk IO benchmark
-echo -e "\tStart disk I/O benchmark ..."
-disk_result=$(dd if=/dev/zero of=tempfile bs=1M count=1024 conv=fdatasync 2>&1 | grep "MB/s" | awk '{print $(NF-1)}')
-echo -e "\t\tTotal time: $disk_result MB/s"
-
-# Assessment of the result
-if (( $(echo "$disk_result > 600" | bc -l) )); then
-  echo -e "\t\t\033[42mVery good disk I/O performance \033[0m"
-elif (( $(echo "$disk_result > 300" | bc -l) )); then
-  echo -e "\t\t\033[30m\033[43mAverage disk I/O performance\033[0m"
-  WARNING=1
-else
-  echo -e "\t\t\033[41mInadequate disk I/O performance\033[0m"
-  ERROR=1
-fi
-
 
 
 # ============================================
