@@ -41,6 +41,9 @@ elif [ "$WHICH_OS" = "NAME=\"Ubuntu\"" ]; then
 elif [ "$WHICH_OS" = "NAME=\"Red Hat Enterprise Linux Server\"" ]; then
 	echo -e "\t\033[42mSupported operating system.\033[0m"
 	echo -e "\tOS: Red Hat Enterprise Linux"
+elif [ "$WHICH_OS" = "NAME=\"Red Hat Enterprise Linux\"" ]; then
+	echo -e "\t\033[42mSupported operating system.\033[0m"
+	echo -e "\tOS: Red Hat Enterprise Linux"
 elif [ "$WHICH_OS" = "NAME=\"Debian GNU/Linux\"" ]; then
 	echo -e "\t\033[42mSupported operating system.\033[0m"
 	echo -e "\tOS: Debian"
@@ -55,7 +58,7 @@ else
 fi
 
 # ==================================================================
-# Verify operating system
+# Verify IPv6 support
 # ==================================================================
 echo -e "\n[versio.io] Check IPv6 support"
 IPV6=$(cat /sys/module/ipv6/parameters/disable)
@@ -74,6 +77,7 @@ echo -e "\n[versio.io] Check if the required commands for installation are avail
 for command in \
 		tar \
 		gzip \
+		awk \
 		wget \
 		openssl \
 		grep \
@@ -81,7 +85,9 @@ for command in \
 		ss \
 		which \
 		systemctl \
+		sysbench \
 		pv \
+		chpasswd \
 		jq
 do
 	echo -e "\tCheck command '$command':"
@@ -95,7 +101,7 @@ do
 		fi
 	else
 		echo -e "\t\t\033[41mNot installed\033[0m"  
-		echo -e "\t\tPlease install app (apt/yum install '$command)"  
+		echo -e "\t\tPlease install app (apt/yum/dnf install $command)"  
 		export ERROR=1
 	fi
 done
@@ -260,9 +266,69 @@ done
 
 
 # ============================================
+# Check system performance
+# ============================================
+echo "[versio.io] Start system performance benchmark ..."
+
+# CPU benchmark
+echo -e "\tStart CPU benchmark ..."
+cpu_result=$(sysbench cpu --cpu-max-prime=20000 run | grep "events per second:" | awk '{print $4}')
+echo -e "\t\tEvents per seconds: $cpu_result"
+
+# Assessment of the result
+if (( $(echo "$cpu_result > 1200" | bc -l) )); then
+  echo -e "\t\t\033[42mVery good CPU performance \033[0m"
+elif (( $(echo "$cpu_result > 500" | bc -l) )); then
+  echo -e "\t\t\033[30m\033[43mAverage CPU performance\033[0m"
+  WARNING=1
+else
+  echo -e "\t\t\033[41mInadequate CPU performance\033[0m"
+  ERROR=1
+fi
+
+
+
+# Memory benchmark
+echo -e "\tStart memory benchmark ..."
+memory_result=$(sysbench memory --memory-total-size=5G run | grep "transferred" | awk '{print $4}' | sed 's/(//g')
+echo -e "\t\tTotal time: $memory_result MiB/sec"
+
+# Assessment of the result
+if (( $(echo "$memory_result > 6000" | bc -l) )); then
+  echo -e "\t\t\033[42mVery good memory performance \033[0m"
+elif (( $(echo "$memory_result > 4000" | bc -l) )); then
+  echo -e "\t\t\033[30m\033[43mAverage memory performance\033[0m"
+  WARNING=1
+else
+  echo -e "\t\t\033[41mInadequate memory performance\033[0m"
+  ERROR=1
+fi
+
+
+# Disk IO benchmark
+echo -e "\tStart disk I/O benchmark ..."
+disk_result=$(dd if=/dev/zero of=tempfile bs=1M count=1024 conv=fdatasync 2>&1 | grep "MB/s" | awk '{print $(NF-1)}')
+echo -e "\t\tTotal time: $disk_result MB/s"
+
+# Assessment of the result
+if (( $(echo "$disk_result > 600" | bc -l) )); then
+  echo -e "\t\t\033[42mVery good disk I/O performance \033[0m"
+elif (( $(echo "$disk_result > 300" | bc -l) )); then
+  echo -e "\t\t\033[30m\033[43mAverage disk I/O performance\033[0m"
+  WARNING=1
+else
+  echo -e "\t\t\033[41mInadequate disk I/O performance\033[0m"
+  ERROR=1
+fi
+
+
+
+# ============================================
 # Final result
 # ============================================
+echo -e "\n==================================================="
 echo -e "\n[versio.io] System requirements verification result"
+echo -e "\n==================================================="
 if [ "$WARNING" = "1" ]; then
 	echo -e "\t\033[30m\033[43mThere are active warning!\033[0m"
     echo -e "\tYou must have the knowledge to handle it."
@@ -277,5 +343,6 @@ else
 	echo ""
 	exit 1;
 fi
+
 
 exit 0;
