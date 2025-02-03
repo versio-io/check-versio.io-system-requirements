@@ -204,6 +204,33 @@ else
 	export ERROR=1
 fi
 
+
+# ============================================
+# Verify that enough storage space is available
+# ============================================
+echo -t "\t[versio.io] Check whether there is enough storage space available"
+export VERSIO_DEPLOYMENT_PROFILE=${VERSIO_DEPLOYMENT_PROFILE:-standalone}
+export availableStorageSpace=$(df --output=avail -BG / | tail -n 1 | tr -d ' G')
+echo -t "\t\tDeployment profile: $VERSIO_DEPLOYMENT_PROFILE"
+echo -t "\t\tAvailable storage space: $availableStorageSpace GB"
+
+if [[ "$VERSIO_DEPLOYMENT_PROFILE" == "standalone" || "$VERSIO_DEPLOYMENT_PROFILE" == "application" ]]; then
+	if [ "$availableStorageSpace" -ge 150 ]; then
+		echo "\t\t\033[42m At least 150 GB are available \033[0m"
+	else
+		echo "\t\t\033[41m At least 150 GB must be available for a new installation \033[0m"
+		export ERROR=1
+	fi
+else
+	if [ "$availableStorageSpace" -ge 300 ]; then
+		echo "\t\t\033[42m At least 300 GB are available \033[0m"
+	else
+		echo "\t\t\033[41m  At least 300 GB must be available for a new installation \033[0m"
+		export ERROR=1
+	fi
+fi
+
+
 # ============================================
 # Verify external URLs are reachable
 # ============================================
@@ -292,13 +319,13 @@ if [ "$IS_INSTALLED" = "1" ]; then
 
 	# Assessment of the result
 	if (( $(echo "$cpu_result > 1200" | bc -l) )); then
-	echo -e "\t\t\033[42m Very good CPU performance \033[0m"
+		echo -e "\t\t\033[42m Very good CPU performance \033[0m"
 	elif (( $(echo "$cpu_result > 500" | bc -l) )); then
-	echo -e "\t\t\033[30m\033[43m Average CPU performance \033[0m"
-	WARNING=1
+		echo -e "\t\t\033[30m\033[43m Average CPU performance \033[0m"
+		WARNING=1
 	else
-	echo -e "\t\t\033[41m Inadequate CPU performance \033[0m"
-	ERROR=1
+		echo -e "\t\t\033[41m Inadequate CPU performance \033[0m"
+		ERROR=1
 	fi
 
 
@@ -310,13 +337,13 @@ if [ "$IS_INSTALLED" = "1" ]; then
 
 	# Assessment of the result
 	if (( $(echo "$memory_result > 6000" | bc -l) )); then
-	echo -e "\t\t\033[42mVery good memory performance \033[0m"
+		echo -e "\t\t\033[42mVery good memory performance \033[0m"
 	elif (( $(echo "$memory_result > 4000" | bc -l) )); then
-	echo -e "\t\t\033[30m\033[43m Average memory performance \033[0m"
-	WARNING=1
+		echo -e "\t\t\033[30m\033[43m Average memory performance \033[0m"
+		WARNING=1
 	else
-	echo -e "\t\t\033[41m Inadequate memory performance \033[0m"
-	ERROR=1
+		echo -e "\t\t\033[41m Inadequate memory performance \033[0m"
+		ERROR=1
 	fi
 
 
@@ -327,12 +354,12 @@ if [ "$IS_INSTALLED" = "1" ]; then
 
 	# Assessment of the result
 	if (( $(echo "$disk_result > 600" | bc -l) )); then
-	echo -e "\t\t\033[42mVery good disk I/O performance \033[0m"
+		echo -e "\t\t\033[42mVery good disk I/O performance \033[0m"
 	elif (( $(echo "$disk_result > 300" | bc -l) )); then
-	echo -e "\t\t\033[30m\033[43m Average disk I/O performance \033[0m"
-	WARNING=1
+		echo -e "\t\t\033[30m\033[43m Average disk I/O performance \033[0m"
+		WARNING=1
 	else
-	echo -e "\t\t\033[41m Inadequate disk I/O performance \033[0m"
+		echo -e "\t\t\033[41m Inadequate disk I/O performance \033[0m"
 	ERROR=1
 	fi
 else
