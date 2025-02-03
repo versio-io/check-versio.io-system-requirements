@@ -208,7 +208,7 @@ fi
 # ============================================
 # Verify that enough storage space is available
 # ============================================
-echo -e "\t[versio.io] Check whether there is enough storage space available"
+echo -e "\n\t[versio.io] Check whether there is enough storage space available"
 export VERSIO_DEPLOYMENT_PROFILE=${VERSIO_DEPLOYMENT_PROFILE:-standalone}
 export availableStorageSpace=$(df --output=avail -BG / | tail -n 1 | tr -d ' G')
 echo -e "\t\tDeployment profile: $VERSIO_DEPLOYMENT_PROFILE"
