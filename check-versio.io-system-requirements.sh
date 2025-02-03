@@ -208,24 +208,24 @@ fi
 # ============================================
 # Verify that enough storage space is available
 # ============================================
-echo -e "\n\t[versio.io] Check whether there is enough storage space available"
+echo -e "\n[versio.io] Check whether there is enough storage space available"
 export VERSIO_DEPLOYMENT_PROFILE=${VERSIO_DEPLOYMENT_PROFILE:-standalone}
 export availableStorageSpace=$(df --output=avail -BG / | tail -n 1 | tr -d ' G')
-echo -e "\t\tDeployment profile: $VERSIO_DEPLOYMENT_PROFILE"
-echo -e "\t\tAvailable storage space: $availableStorageSpace GB"
+echo -e "\tDeployment profile: $VERSIO_DEPLOYMENT_PROFILE"
+echo -e "\tAvailable storage space: $availableStorageSpace GB"
 
 if [[ "$VERSIO_DEPLOYMENT_PROFILE" == "standalone" || "$VERSIO_DEPLOYMENT_PROFILE" == "application" ]]; then
 	if [ "$availableStorageSpace" -ge 150 ]; then
-		echo -e "\t\t\033[42m At least 150 GB are available \033[0m"
+		echo -e "\t\033[42m At least 150 GB are available \033[0m"
 	else
-		echo -e "\t\t\033[41m At least 150 GB must be available for a new installation \033[0m"
+		echo -e "\t\033[41m At least 150 GB must be available for a new installation \033[0m"
 		export ERROR=1
 	fi
 else
 	if [ "$availableStorageSpace" -ge 300 ]; then
-		echo -e "\t\t\033[42m At least 300 GB are available \033[0m"
+		echo -e "\t\033[42m At least 300 GB are available \033[0m"
 	else
-		echo -e "\t\t\033[41m  At least 300 GB must be available for a new installation \033[0m"
+		echo -e "\t\033[41m  At least 300 GB must be available for a new installation \033[0m"
 		export ERROR=1
 	fi
 fi
@@ -242,21 +242,21 @@ for domain in \
 do
 	if [ "$WGET" = "1" ]; then
 		echo -e "\tCheck network connection to '$domain' with WGET."
-		PING_RESULT=$(wget -q -O -S --spider $domain | echo $?)
+		PING_RESULT=$(wget -q -O -S --spider --timeout=5 $domain | echo $?)
 		if [ "$PING_RESULT" = "0" ]; then
 			echo -e "\t\t\033[42m Available. \033[0m"
 		else
-			echo -e "\t\t\033[30m\033[43m Not available. \033[0m"
+			echo -e "\t\t\033[41m\033[43m Not available. \033[0m"
 			echo -e "\t\tOnly restricted service available."
 			ERROR=1
 		fi
 	elif [ "$CURL" = "1" ]; then
 		echo -e "\tCheck network connection to '$domain' with CURL."
-		PING_RESULT=$(curl -Is  $domain | head -n 1 | grep -e 200 -e 401 | wc -l)
+		PING_RESULT=$(curl -Is  --max-time 5 $domain | head -n 1 | grep -e 200 -e 401 | wc -l)
 		if [ "$PING_RESULT" = "1" ]; then
 			echo -e "\t\t\033[42m Available. \033[0m"
 		else
-			echo -e "\t\t\033[30m\033[43m Not available. \033[0m"
+			echo -e "\t\t\033[41m\033[43m Not available. \033[0m"
 			echo -e "\t\tOnly restricted service available."
 			ERROR=1
 		fi
@@ -279,7 +279,7 @@ for domain in \
 do
 	if [ "$WGET" = "1" ]; then
 		echo -e "\tCheck network connection to '$domain' with WGET."
-		PING_RESULT=$(wget -q -O -S --spider $domain | echo $?)
+		PING_RESULT=$(wget -q -O -S --spider --timeout=5 $domain | echo $?)
 		if [ "$PING_RESULT" = "0" ]; then
 			echo -e "\t\t\033[42m Available. \033[0m"
 		else
@@ -289,7 +289,7 @@ do
 		fi
 	elif [ "$CURL" = "1" ]; then
 		echo -e "\tCheck network connection to '$domain' with CURL."
-		PING_RESULT=$(curl -Is $domain | head -n 1 | grep -e 200 -e 401 | wc -l)
+		PING_RESULT=$(curl -Is --max-time 5 $domain | head -n 1 | grep -e 200 -e 401 | wc -l)
 		if [ "$PING_RESULT" = "1" ]; then
 			echo -e "\t\t\033[42m Available. \033[0m"
 		else
