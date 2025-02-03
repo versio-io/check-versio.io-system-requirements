@@ -377,6 +377,7 @@ echo -e "\n==================================================="
 if [ "$WARNING" = "1" ]; then
 	echo -e "\t\033[30m\033[43m There are active warning! \033[0m"
     echo -e "\tYou must have the knowledge to handle it."
+	echo ""
 fi
 if [ "$ERROR" = "0" ]; then
 	echo -e "\t\033[42m System requirements are fulfilled. You are ready to install and start Versio.io Managed plattform! \033[0m"
