@@ -106,6 +106,18 @@ do
 	fi
 done
 
+# ============================================
+# Verify that podman is NOT installed
+# ============================================
+echo -e "\n[versio.io] Check if unsupported podman installation is available"
+IS_PODMAN_INSTALLED=$(which podman 2> /dev/null | grep -c "podman")
+if [ "$IS_PODMAN_INSTALLED" = "1" ]; then
+	echo -e "\t\033[41m Available \033[0m"
+	echo -e "\t"$(podman --version)
+	export ERROR=1
+else
+    echo -e "\t\033[42m Podman is not installed \033[0m"  
+fi
 
 # ============================================
 # Verify docker is installed
@@ -174,7 +186,7 @@ done
 # ============================================
 echo -e "\n[versio.io] Check if needed ports are not used"
 echo -e "\tPort 80 (HTTP)"
-IS_USED=$(ss -lntu  | grep -c ":80")
+IS_USED=$(ss -lntu  | grep -c ":80 ")
 if [ "$IS_USED" = "0" ]; then 
 	echo -e "\t\t\033[42m Not used \033[0m"
 else
@@ -183,7 +195,7 @@ else
 	export ERROR=1
 fi
 echo -e "\tPort 443 (HTTPS)"
-IS_USED=$(ss -lntu | grep -c ":443")
+IS_USED=$(ss -lntu | grep -c ":443 ")
 if [ "$IS_USED" = "0" ]; then
 	echo -e "\t\t\033[42m Not used \033[0m"
 else
