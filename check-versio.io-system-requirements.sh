@@ -215,7 +215,7 @@ for domain in \
 do
 	if [ "$WGET" = "1" ]; then
 		echo -e "\tCheck network connection to '$domain' with wget."
-		PING_RESULT=$(wget -q -O -S --spider $domain | echo $?)
+		PING_RESULT=$(wget -q -O -S --spider --timeout=5 $domain | echo $?)
 		if [ "$PING_RESULT" = "0" ]; then
 			echo -e "\t\t\033[42m Available. \033[0m"
 		else
@@ -225,7 +225,7 @@ do
 		fi
 	elif [ "$CURL" = "1" ]; then
 		echo -e "\tCheck network connection to '$domain' with curl."
-		PING_RESULT=$(curl -Is $domain | head -n 1 | grep -e 200 -e 401 | wc -l)
+		PING_RESULT=$(curl -Is --max-time=5 $domain | head -n 1 | grep -e 200 -e 401 | wc -l)
 		if [ "$PING_RESULT" = "1" ]; then
 			echo -e "\t\t\033[42m Available. \033[0m"
 		else
