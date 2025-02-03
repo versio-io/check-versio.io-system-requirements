@@ -208,24 +208,24 @@ fi
 # ============================================
 # Verify that enough storage space is available
 # ============================================
-echo -t "\t[versio.io] Check whether there is enough storage space available"
+echo -e "\t[versio.io] Check whether there is enough storage space available"
 export VERSIO_DEPLOYMENT_PROFILE=${VERSIO_DEPLOYMENT_PROFILE:-standalone}
 export availableStorageSpace=$(df --output=avail -BG / | tail -n 1 | tr -d ' G')
-echo -t "\t\tDeployment profile: $VERSIO_DEPLOYMENT_PROFILE"
-echo -t "\t\tAvailable storage space: $availableStorageSpace GB"
+echo -e "\t\tDeployment profile: $VERSIO_DEPLOYMENT_PROFILE"
+echo -e "\t\tAvailable storage space: $availableStorageSpace GB"
 
 if [[ "$VERSIO_DEPLOYMENT_PROFILE" == "standalone" || "$VERSIO_DEPLOYMENT_PROFILE" == "application" ]]; then
 	if [ "$availableStorageSpace" -ge 150 ]; then
-		echo "\t\t\033[42m At least 150 GB are available \033[0m"
+		echo -e "\t\t\033[42m At least 150 GB are available \033[0m"
 	else
-		echo "\t\t\033[41m At least 150 GB must be available for a new installation \033[0m"
+		echo -e "\t\t\033[41m At least 150 GB must be available for a new installation \033[0m"
 		export ERROR=1
 	fi
 else
 	if [ "$availableStorageSpace" -ge 300 ]; then
-		echo "\t\t\033[42m At least 300 GB are available \033[0m"
+		echo -e "\t\t\033[42m At least 300 GB are available \033[0m"
 	else
-		echo "\t\t\033[41m  At least 300 GB must be available for a new installation \033[0m"
+		echo -e "\t\t\033[41m  At least 300 GB must be available for a new installation \033[0m"
 		export ERROR=1
 	fi
 fi
@@ -248,7 +248,7 @@ do
 		else
 			echo -e "\t\t\033[30m\033[43m Not available. \033[0m"
 			echo -e "\t\tOnly restricted service available."
-			WARNING=1
+			ERROR=1
 		fi
 	elif [ "$CURL" = "1" ]; then
 		echo -e "\tCheck network connection to '$domain' with CURL."
@@ -258,7 +258,7 @@ do
 		else
 			echo -e "\t\t\033[30m\033[43m Not available. \033[0m"
 			echo -e "\t\tOnly restricted service available."
-			WARNING=1
+			ERROR=1
 		fi
 	else
 		echo -e "\tCheck network connection to '$domain'."
