@@ -214,8 +214,8 @@ for domain in \
 	https://registry.versio.io
 do
 	if [ "$WGET" = "1" ]; then
-		echo -e "\tCheck network connection to '$domain' with wget."
-		PING_RESULT=$(wget -q -O -S --spider --timeout=5 $domain | echo $?)
+		echo -e "\tCheck network connection to '$domain' with WGET."
+		PING_RESULT=$(wget -q -O -S --spider $domain | echo $?)
 		if [ "$PING_RESULT" = "0" ]; then
 			echo -e "\t\t\033[42m Available. \033[0m"
 		else
@@ -224,7 +224,7 @@ do
 			WARNING=1
 		fi
 	elif [ "$CURL" = "1" ]; then
-		echo -e "\tCheck network connection to '$domain' with curl."
+		echo -e "\tCheck network connection to '$domain' with CURL."
 		PING_RESULT=$(curl -Is  $domain | head -n 1 | grep -e 200 -e 401 | wc -l)
 		if [ "$PING_RESULT" = "1" ]; then
 			echo -e "\t\t\033[42m Available. \033[0m"
@@ -241,7 +241,7 @@ done
 
 
 
-# ==========================================--max-time=5=======
+# =================================================
 # Verify hardware vendor warranty API are reachable
 # =================================================
 echo -e "\n[versio.io] Check if warranty APIs of hardware vendors are available"
@@ -251,8 +251,8 @@ for domain in \
 	http://supportapi.lenovo.com
 do
 	if [ "$WGET" = "1" ]; then
-		echo -e "\tCheck network connection to '$domain' with wget."
-		PING_RESULT=$(wget -q -O -S --spider --timeout=5 $domain | echo $?)
+		echo -e "\tCheck network connection to '$domain' with WGET."
+		PING_RESULT=$(wget -q -O -S --spider $domain | echo $?)
 		if [ "$PING_RESULT" = "0" ]; then
 			echo -e "\t\t\033[42m Available. \033[0m"
 		else
@@ -261,8 +261,8 @@ do
 			WARNING=1
 		fi
 	elif [ "$CURL" = "1" ]; then
-		echo -e "\tCheck network connection to '$domain' with curl."
-		PING_RESULT=$(curl -Is --max-time=5 $domain | head -n 1 | grep -e 200 -e 401 | wc -l)
+		echo -e "\tCheck network connection to '$domain' with CURL."
+		PING_RESULT=$(curl -Is $domain | head -n 1 | grep -e 200 -e 401 | wc -l)
 		if [ "$PING_RESULT" = "1" ]; then
 			echo -e "\t\t\033[42m Available. \033[0m"
 		else
