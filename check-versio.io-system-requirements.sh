@@ -106,6 +106,19 @@ do
 	fi
 done
 
+
+# ============================================
+# Verify if firewalld is active
+# ============================================
+echo -e "\n[versio.io] Check if firewalld is active"
+IS_FIREWALLD_ACTIVE=$(systemctl is-active firewalld)
+if [ "$IS_FIREWALLD_ACTIVE" = "active" ]; then
+    echo -e "\t\t\033[30m\033[43m firewalld is active - Please check whether the firewall rules are preventing the Versio.io platform from running! \033[0m"  
+	export WARNING=1
+else
+    echo -e "\t\033[42m firewalld is not active \033[0m"  
+fi
+
 # ============================================
 # Verify that podman is NOT installed
 # ============================================
@@ -214,18 +227,18 @@ export availableStorageSpace=$(df --output=avail -BG / | tail -n 1 | tr -d ' G')
 echo -e "\tDeployment profile: $VERSIO_DEPLOYMENT_PROFILE"
 echo -e "\tAvailable storage space: $availableStorageSpace GB"
 
-if [[ "$VERSIO_DEPLOYMENT_PROFILE" == "standalone" || "$VERSIO_DEPLOYMENT_PROFILE" == "application" ]]; then
+if [[ "$VERSIO_DEPLOYMENT_PROFILE" == "database" || "$VERSIO_DEPLOYMENT_PROFILE" == "application" ]]; then
 	if [ "$availableStorageSpace" -ge 150 ]; then
-		echo -e "\t\033[42m At least 150 GB are available \033[0m"
+		echo -e "\t\033[42m At least 150 GiB are available \033[0m"
 	else
-		echo -e "\t\033[41m At least 150 GB must be available for a new installation \033[0m"
+		echo -e "\t\033[41m At least 150 GiB must be available for a new installation \033[0m"
 		export ERROR=1
 	fi
 else
 	if [ "$availableStorageSpace" -ge 300 ]; then
-		echo -e "\t\033[42m At least 300 GB are available \033[0m"
+		echo -e "\t\033[42m At least 300 GiB are available \033[0m"
 	else
-		echo -e "\t\033[41m  At least 300 GB must be available for a new installation \033[0m"
+		echo -e "\t\033[41m  At least 300 GiB must be available for a new installation \033[0m"
 		export ERROR=1
 	fi
 fi
